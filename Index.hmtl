@@ -1,0 +1,454 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#142342">
+  <title>CampusCoin | Campus Rewards</title>
+  <style>
+    :root {
+      --navy: #142342;
+      --blue: #244578;
+      --gold: #f5c451;
+      --bg: #f3f6fb;
+      --text: #192844;
+      --muted: #6d7890;
+      --white: #fff;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: system-ui, Arial, sans-serif;
+    }
+
+    header {
+      background: var(--navy);
+      color: white;
+      padding: 22px 18px 30px;
+      border-radius: 0 0 28px 28px;
+    }
+
+    .top, .balance-row, .transaction {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .logo {
+      display: grid;
+      place-items: center;
+      width: 46px;
+      height: 46px;
+      border-radius: 50%;
+      background: var(--gold);
+      color: var(--navy);
+      font-size: 24px;
+      font-weight: 800;
+    }
+
+    h1 { font-size: 21px; margin: 0; }
+    h2 { font-size: 19px; }
+    p { line-height: 1.5; }
+
+    .muted { color: var(--muted); font-size: 13px; }
+    header .muted { color: #d2dcef; }
+
+    .badge {
+      font-size: 11px;
+      background: #2c4166;
+      padding: 7px 10px;
+      border-radius: 20px;
+    }
+
+    main {
+      width: min(100% - 28px, 560px);
+      margin: -12px auto 35px;
+    }
+
+    .card {
+      background: white;
+      border-radius: 18px;
+      padding: 19px;
+      margin-bottom: 15px;
+      box-shadow: 0 5px 20px #1423420b;
+    }
+
+    .balance-card {
+      background: var(--blue);
+      color: white;
+    }
+
+    .balance-card .muted { color: #dce6f6; }
+
+    .balance {
+      font-size: clamp(30px, 8vw, 40px);
+      font-weight: 800;
+      letter-spacing: -1px;
+      margin: 8px 0;
+      overflow-wrap: anywhere;
+    }
+
+    button {
+      width: 100%;
+      border: 0;
+      border-radius: 12px;
+      padding: 14px;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    button:focus-visible {
+      outline: 3px solid #608ce0;
+      outline-offset: 3px;
+    }
+
+    .earn {
+      background: var(--gold);
+      color: var(--navy);
+      margin-top: 13px;
+    }
+
+    button:disabled {
+      opacity: .55;
+      cursor: not-allowed;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .stat {
+      border: 1px solid #e7ebf2;
+      border-radius: 13px;
+      padding: 14px;
+    }
+
+    .stat strong {
+      display: block;
+      font-size: 20px;
+      margin-top: 8px;
+    }
+
+    .transaction {
+      padding: 12px 0;
+      border-bottom: 1px solid #edf0f5;
+      align-items: flex-start;
+    }
+
+    .transaction:last-child { border-bottom: 0; }
+
+    .plus { color: #14804a; font-weight: 800; }
+
+    .notice {
+      background: #fff7dc;
+      color: #725311;
+      border-radius: 12px;
+      padding: 12px;
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    .section-title {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .section-title h2 { margin: 0; }
+
+    footer {
+      text-align: center;
+      padding: 10px 18px 30px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    @media (min-width: 600px) {
+      header { padding-left: max(24px, calc((100% - 560px)/2)); }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="top">
+      <div class="brand">
+        <div class="logo">C</div>
+        <div>
+          <h1>CampusCoin</h1>
+          <div class="muted">Your campus. Your rewards.</div>
+        </div>
+      </div>
+      <span class="badge">DEMO</span>
+    </div>
+  </header>
+
+  <main>
+    <section class="card balance-card">
+      <div class="muted">YOUR TEST BALANCE</div>
+      <div class="balance"><span id="balance">0</span> CAMP</div>
+      <div class="muted">Virtual coins · No monetary value</div>
+      <button class="earn" id="earnBtn">🪙 Earn 25 test coins</button>
+      <p id="status" role="status" aria-live="polite"
+         class="muted">Ready to start your daily session?</p>
+    </section>
+
+    <section class="card">
+      <div class="section-title">
+        <h2>Your activity</h2>
+        <span>📊</span>
+      </div>
+      <div class="grid">
+        <div class="stat">
+          <span class="muted">Total earned</span>
+          <strong id="total">0 CAMP</strong>
+        </div>
+        <div class="stat">
+          <span class="muted">Successful claims</span>
+          <strong id="claims">0</strong>
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="section-title">
+        <h2>Reward history</h2>
+        <span>🕒</span>
+      </div>
+      <div id="history">
+        <p class="muted">Your first reward will appear here.</p>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>⭐ CampusCoin Premium</h2>
+      <p class="muted">
+        Future features may include custom profile themes,
+        extra statistics and an ad-free experience.
+      </p>
+      <button id="premiumBtn" style="background:#e8edf7;color:#142342">
+        Preview premium
+      </button>
+      <p id="premiumStatus" class="muted" role="status"></p>
+    </section>
+
+    <section class="card">
+      <h2>📣 Sponsored campus challenges</h2>
+      <p class="muted">
+        Space for future campus events and sponsor offers.
+        No sponsor is currently connected.
+      </p>
+      <div class="notice">
+        Advertising and premium purchases are not active in this demo.
+        Never pay anyone to unlock these test coins.
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>About this demo</h2>
+      <p class="muted">
+        CAMP balances are simulated rewards stored on this device.
+        They are not cryptocurrency, cannot be withdrawn or transferred,
+        and have no promised cash value.
+      </p>
+      <button id="resetBtn" style="background:#edf0f5;color:#25334d">
+        Reset demo data
+      </button>
+    </section>
+  </main>
+
+  <footer>
+    CampusCoin Prototype · Version 0.1<br>
+    A learning project, not a financial product.
+  </footer>
+
+  <script>
+    (() => {
+      "use strict";
+
+      const STORAGE_KEY = "campuscoin_demo_v1";
+      const REWARD = 25;
+      const DAY_MS = 24 * 60 * 60 * 1000;
+
+      const $ = (id) => document.getElementById(id);
+
+      const freshState = () => ({
+        balance: 0,
+        total: 0,
+        claims: 0,
+        lastClaim: 0,
+        history: []
+      });
+
+      let state = freshState();
+
+      // Device storage is convenient for a demo, not secure
+      // storage for real balances or money.
+      try {
+        const saved = localStorage.getItem(STORAGE_KEY);
+        if (saved) {
+          const parsed = JSON.parse(saved);
+          if (
+            Number.isSafeInteger(parsed.balance) &&
+            parsed.balance >= 0 &&
+            Number.isSafeInteger(parsed.total) &&
+            parsed.total >= 0 &&
+            Number.isSafeInteger(parsed.claims) &&
+            parsed.claims >= 0 &&
+            Number.isSafeInteger(parsed.lastClaim) &&
+            Array.isArray(parsed.history)
+          ) {
+            state = {
+              ...freshState(),
+              balance: parsed.balance,
+              total: parsed.total,
+              claims: parsed.claims,
+              lastClaim: parsed.lastClaim,
+              history: parsed.history
+                .filter(x => x && typeof x.date === "string"
+                  && Number.isSafeInteger(x.amount))
+                .slice(0, 50)
+            };
+          }
+        }
+      } catch (_) {
+        state = freshState();
+      }
+
+      function save() {
+        try {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+          return true;
+        } catch (_) {
+          $("status").textContent =
+            "Browser storage is unavailable. Your progress may not persist.";
+          return false;
+        }
+      }
+
+      function render() {
+        $("balance").textContent = state.balance.toLocaleString();
+        $("total").textContent = state.total.toLocaleString() + " CAMP";
+        $("claims").textContent = state.claims.toLocaleString();
+
+        const remaining = state.lastClaim
+          ? Math.max(0, DAY_MS - (Date.now() - state.lastClaim))
+          : 0;
+
+        $("earnBtn").disabled = remaining > 0;
+
+        if (remaining > 0) {
+          const hours = Math.floor(remaining / 3600000);
+          const minutes = Math.ceil((remaining % 3600000) / 60000);
+          $("earnBtn").textContent = "Come back in " + hours +
+            "h " + minutes + "m";
+          if (!$("status").textContent.startsWith("Reward earned")) {
+            $("status").textContent = "Your next reward is not ready yet.";
+          }
+        } else {
+          $("earnBtn").textContent = "🪙 Earn 25 test coins";
+        }
+
+        const history = $("history");
+        history.replaceChildren();
+
+        if (state.history.length === 0) {
+          const empty = document.createElement("p");
+          empty.className = "muted";
+          empty.textContent = "Your first reward will appear here.";
+          history.appendChild(empty);
+          return;
+        }
+
+        state.history.forEach(item => {
+          const row = document.createElement("div");
+          row.className = "transaction";
+
+          const details = document.createElement("div");
+          const title = document.createElement("strong");
+          title.textContent = "Daily test reward";
+          const date = document.createElement("div");
+          date.className = "muted";
+          date.textContent = item.date;
+          details.append(title, date);
+
+          const amount = document.createElement("span");
+          amount.className = "plus";
+          amount.textContent = "+" + item.amount + " CAMP";
+
+          row.append(details, amount);
+          history.appendChild(row);
+        });
+      }
+
+      $("earnBtn").addEventListener("click", () => {
+        const now = Date.now();
+
+        if (state.lastClaim && now - state.lastClaim < DAY_MS) {
+          $("status").textContent = "Your next reward is not ready yet.";
+          render();
+          return;
+        }
+
+        if (state.balance > Number.MAX_SAFE_INTEGER - REWARD ||
+            state.total > Number.MAX_SAFE_INTEGER - REWARD) {
+          $("status").textContent = "Balance limit reached in this demo.";
+          return;
+        }
+
+        state.balance += REWARD;
+        state.total += REWARD;
+        state.claims += 1;
+        state.lastClaim = now;
+        state.history.unshift({
+          amount: REWARD,
+          date: new Date(now).toLocaleString()
+        });
+        state.history = state.history.slice(0, 50);
+
+        save();
+        $("status").textContent = "Reward earned! +25 test CAMP.";
+        render();
+      });
+
+      $("premiumBtn").addEventListener("click", () => {
+        $("premiumStatus").textContent =
+          "Premium is a preview only. No payment is taken.";
+      });
+
+      $("resetBtn").addEventListener("click", () => {
+        if (!confirm("Reset all CampusCoin demo data on this device?")) {
+          return;
+        }
+        state = freshState();
+        save();
+        $("status").textContent = "Demo reset successfully.";
+        $("premiumStatus").textContent = "";
+        render();
+      });
+
+      render();
+
+      // Refresh the cooldown display when the page becomes active.
+      document.addEventListener("visibilitychange", () => {
+        if (!document.hidden) render();
+      });
+    })();
+  </script>
+</body>
+</html>
